@@ -94,7 +94,7 @@ async def on_message(message):
             await message.channel.send(f"{message.author.mention} hat die Rolle **{role.name}** erhalten!")
     save_xp()
     await bot.process_commands(message)
-    @bot.command()
+@bot.command()
 async def level(ctx):
     user_id = str(ctx.author.id)
     xp = xp_data.get(user_id, 0)
