@@ -95,14 +95,14 @@ async def on_message(message):
     save_xp()
     await bot.process_commands(message)
 @bot.command()
-    async def level(ctx):
+async def level(ctx):
     user_id = str(ctx.author.id)
     xp = xp_data.get(user_id, 0)
     level = get_level(xp)
     await ctx.send(f"{ctx.author.mention}, du hast **{xp} XP** und bist Level **{level}**.")
 
 @bot.command()
-    async def rangliste(ctx):
+async def rangliste(ctx):
     top = sorted(xp_data.items(), key=lambda x: x[1], reverse=True)[:10]
     text = "**Top 10 Spieler:**\n"
     for i, (user_id, xp) in enumerate(top, 1):
