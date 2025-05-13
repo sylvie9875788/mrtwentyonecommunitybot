@@ -1,4 +1,3 @@
-
 import os
 import discord
 from discord.ext import commands, tasks
@@ -15,17 +14,50 @@ bot = commands.Bot(command_prefix="!", intents=intents)
 
 TWITCH_CLIENT_ID = os.environ.get("TWITCH_CLIENT_ID")
 TWITCH_CLIENT_SECRET = os.environ.get("TWITCH_CLIENT_SECRET")
-TWITCH_USER_LOGIN = "mrtwentyyonee"
-TWITCH_LINK = "https://twitch.tv/mrtwentyyonee"
-TIKTOK_LINK = "https://tiktok.com/@mrtwentyyonee"
+TWITCH_USER_LOGIN = "MrTwentyOne7"
+TWITCH_LINK = "https://twitch.tv/MrTwentyOne7"
+TIKTOK_LINK = "https://tiktok.com/@mr_twentyy_onee"
 LIVE_CHANNEL_NAME = "🔴・wer-ist-live"
 XP_FILE = "xp_data.json"
-LEVEL_ROLES = {1: "Lvl 1 – Frischling", 5: "Lvl 5 – Mitläufer", 10: "Lvl 10 – Laberhecht", 15: "Lvl 15 – Dauerzocker", 20: "Lvl 20 – Sprachboss", 25: "Lvl 25 – Ehrenmitglied", 30: "Lvl 30 – Legende"}
 
 access_token = None
 xp_data = {}
 
-# Load XP data
+LEVEL_ROLES = {
+    i: f"Level {i} – {text}" for i, text in {
+        1: "Frisch aus dem Ei",
+        2: "Discord-Tourist",
+        3: "Chat-Schnupperer",
+        4: "Reaktionsjäger",
+        5: "GIF-Gott in Ausbildung",
+        6: "Emoji-Forscher",
+        7: "Sprachkanal-Vermeider",
+        8: "Memelord-Lehrling",
+        9: "Sticker-Spammer",
+        10: "Teilzeit-Kommentator",
+        11: "Laberanfänger",
+        12: "Sarkasmus-Schleuder",
+        13: "Achtet nie auf Regeln",
+        14: "Textwand-Baumeister",
+        15: "Channel-Ninja",
+        16: "Rollenjäger",
+        17: "Voice-Lurker",
+        18: "Kaffee-trinkender Chiller",
+        19: "Spam-Philosoph",
+        20: "Kommt immer zu spät",
+        21: "Chronischer Discord-User",
+        22: "Meme-Wissenschaftler",
+        23: "Ironie-Experte",
+        24: "Afk-Profi",
+        25: "Fast Legende",
+        26: "Kanal-Kommandant",
+        27: "Reaktions-König",
+        28: "Viel zu aktiv",
+        29: "Kann nicht aufhören",
+        30: "LEGENDE"
+    }.items()
+}
+
 if os.path.exists(XP_FILE):
     with open(XP_FILE, "r") as f:
         xp_data = json.load(f)
@@ -62,8 +94,7 @@ async def on_message(message):
             await message.channel.send(f"{message.author.mention} hat die Rolle **{role.name}** erhalten!")
     save_xp()
     await bot.process_commands(message)
-
-@bot.command()
+    @bot.command()
 async def level(ctx):
     user_id = str(ctx.author.id)
     xp = xp_data.get(user_id, 0)
@@ -80,10 +111,12 @@ async def rangliste(ctx):
     await ctx.send(text)
 
 @bot.command()
+@commands.has_any_role("Admin", "Moderator", "Streamer")
 async def live(ctx):
-    await ctx.send(f"**MrTwentyyOnee ist auf Twitch & TikTok unterwegs!**\nTwitch: {TWITCH_LINK}\nTikTok: {TIKTOK_LINK}")
+    await ctx.send(f"**MrTwentyOne7 ist LIVE unterwegs!**\nTwitch: {TWITCH_LINK}\nTikTok: {TIKTOK_LINK}")
 
 @bot.command()
+@commands.has_any_role("Admin", "Moderator", "Streamer")
 async def live10(ctx):
     channel = discord.utils.get(ctx.guild.text_channels, name=LIVE_CHANNEL_NAME)
     if channel:
@@ -93,11 +126,12 @@ async def live10(ctx):
         await ctx.send(f"Kanal '{LIVE_CHANNEL_NAME}' wurde nicht gefunden.")
 
 @bot.command()
+@commands.has_any_role("Admin", "Moderator", "Streamer")
 async def setup(ctx):
     guild = ctx.guild
-    role_names = ["Admin", "Moderator", "Streamer", "Mitglied", "GamingNow"]
+    base_roles = ["Admin", "Moderator", "Streamer", "Mitglied", "GamingNow"]
     roles = {}
-    for role_name in role_names:
+    for role_name in base_roles:
         role = await guild.create_role(name=role_name)
         roles[role_name.lower()] = role
 
@@ -137,6 +171,15 @@ async def setup(ctx):
 
     await ctx.send("Setup abgeschlossen! Alle Räume, Rollen und Levelrollen wurden erstellt.")
 
+# Fehlerbehandlung für fehlende Rechte
+@bot.event
+async def on_command_error(ctx, error):
+    if isinstance(error, commands.MissingAnyRole):
+        await ctx.send("Du hast keine Berechtigung für diesen Befehl.")
+    else:
+        raise error
+
+# Twitch-Token holen
 async def get_twitch_access_token():
     global access_token
     url = "https://id.twitch.tv/oauth2/token"
@@ -150,6 +193,7 @@ async def get_twitch_access_token():
             data = await resp.json()
             access_token = data.get("access_token")
 
+# Twitch-Live-Check
 @tasks.loop(seconds=60)
 async def check_twitch_live():
     global access_token
