@@ -105,8 +105,7 @@ async def rangliste(ctx):
     text = ""
     for i, (user_id, xp) in enumerate(sorted_users[:10], 1):
         member = await ctx.guild.fetch_member(int(user_id))
-        text += f"{i}. {member.display_name} – {get_level(xp)} ({xp} XP)
-"
+        text += f"{i}. {member.display_name} – {get_level(xp)} ({xp} XP)"
     await ctx.send("**Rangliste der aktivsten Mitglieder:**
 " + text)
 
