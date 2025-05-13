@@ -67,7 +67,10 @@ def save_xp():
         json.dump(xp_data, f)
 
 def get_level(xp):
-    return int(xp ** 0.5)
+    level = 0
+    while xp >= (level + 1) ** 2 * 10:
+        level += 1
+    return level
 
 @bot.event
 async def on_ready():
