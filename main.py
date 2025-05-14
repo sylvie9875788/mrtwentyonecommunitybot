@@ -222,7 +222,6 @@ async def check_twitch_live():
                                 msg = f"**{TWITCH_USER_LOGIN} ist jetzt live auf Twitch!**\n{TWITCH_LINK}"
                                 await channel.send(msg)
 
-bot.run(os.environ["DISCORD_BOT_TOKEN"])
 import random
 from datetime import datetime
 import json
@@ -433,3 +432,4 @@ async def blackjack(ctx):
 
     save_money()
     await ctx.send(f"Deine Hand: {spieler} ({s_sum})\nBot: {bot_hand} ({b_sum})\n**{result}**")
+    bot.run(os.environ["DISCORD_BOT_TOKEN"])
