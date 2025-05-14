@@ -441,4 +441,31 @@ async def blackjack(ctx):
 
     save_money()
     await ctx.send(f"Deine Hand: {spieler} ({s_sum})\nBot: {bot_hand} ({b_sum})\n**{result}**")
+
+@bot.event
+async def on_raw_reaction_add(payload):
+    guild = bot.get_guild(payload.guild_id)
+    if not guild:
+        return
+
+    # Nur der Kanal mit den Regeln (Name anpassen, falls abweichend)
+    regeln_channel = discord.utils.get(guild.text_channels, name="✅・regeln")
+    if not regeln_channel or payload.channel_id != regeln_channel.id:
+        return
+
+    # Nur bei bestimmtem Emoji (z. B. ✅)
+    if str(payload.emoji.name) != "✅":
+        return
+
+    # Rolle "Mitglied" vergeben
+    role = discord.utils.get(guild.roles, name="Mitglied")
+    if not role:
+        return
+
+    member = guild.get_member(payload.user_id)
+    if member and role not in member.roles:
+        await member.add_roles(role)
+        channel = discord.utils.get(guild.text_channels, name="💬・allgemein")
+        if channel:
+            await channel.send(f"Willkommen {member.mention} auf dem Server!")
 bot.run(os.environ["DISCORD_BOT_TOKEN"])
