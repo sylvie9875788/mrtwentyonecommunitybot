@@ -116,7 +116,12 @@ async def rangliste(ctx):
 @bot.command()
 @commands.has_any_role("Admin", "Moderator", "Streamer")
 async def live(ctx):
-    await ctx.send(f"**MrTwentyOne7 ist LIVE unterwegs!**\nTwitch: {TWITCH_LINK}\nTikTok: {TIKTOK_LINK}")
+    channel = discord.utils.get(ctx.guild.text_channels, name="🔴・wer-ist-live")
+    if channel:
+        msg = f"**MrTwentyOne7 ist LIVE unterwegs!**\nTwitch: {TWITCH_LINK}\nTikTok: {TIKTOK_LINK}"
+        await channel.send(msg)
+    else:
+        await ctx.send("Der Kanal '🔴・wer-ist-live' wurde nicht gefunden.")
 
 @bot.command()
 @commands.has_any_role("Admin", "Moderator", "Streamer")
