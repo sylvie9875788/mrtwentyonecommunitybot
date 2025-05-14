@@ -393,6 +393,10 @@ async def kauf(ctx, item: str):
     save_purchases()
     await ctx.send(f"{ctx.author.mention} hat gekauft: **{beschreibung}**")
 
+    # Öffentlich posten im Live-Stream-Kanal
+    channel = discord.utils.get(ctx.guild.text_channels, name="🎥・live-streams")
+    if channel:
+        await channel.send(f"**{ctx.author.display_name}** hat gerade im Shop gekauft: `{item}` – {beschreibung}")
 @bot.command()
 async def blackjack(ctx):
     user_id = str(ctx.author.id)
