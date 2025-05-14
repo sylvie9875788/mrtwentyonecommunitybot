@@ -432,4 +432,4 @@ async def blackjack(ctx):
 
     save_money()
     await ctx.send(f"Deine Hand: {spieler} ({s_sum})\nBot: {bot_hand} ({b_sum})\n**{result}**")
-    bot.run(os.environ["DISCORD_BOT_TOKEN"])
+bot.run(os.environ["DISCORD_BOT_TOKEN"])
