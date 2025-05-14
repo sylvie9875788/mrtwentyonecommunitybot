@@ -328,7 +328,7 @@ async def meinekaeufe(ctx):
         for eintrag in history[-10:]:
             msg += f"- {eintrag}\n"
         await ctx.send(msg)
-        @bot.command()
+@bot.command()
 async def shop(ctx):
     items = {
         "trinken": 100,
